@@ -1,7 +1,8 @@
-import { express } from "express";
-import authRoutes from "./routes/authRoutes";
+import express from "express";
+import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
-import prisma from "./config/prisma";
+import prisma from "./config/prisma.js";
+import errorHandler from "./middlewares/errorHandler.js";
 
 const app = express();
 app.use(express.json());

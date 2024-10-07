@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import authController from '../controllers/authController';
+import {register, login} from '../controllers/authController.js';
 import { body } from 'express-validator';
-import validate from '../middlewares/validateMiddleware';
+import validate from '../middlewares/validateMiddleware.js';
 
 // src/routes/authRoutes.js
 const router = Router();
@@ -22,7 +22,7 @@ const loginValidation = [
 ];
 
 // Rutas
-router.post('/register', registerValidation, validate, authController.register);
-router.post('/login', loginValidation, validate, authController.login);
+router.post('/register', registerValidation, validate, register);
+router.post('/login', loginValidation, validate, login);
 
 export default router;
