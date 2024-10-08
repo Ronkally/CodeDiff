@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 const register = async (req, res, next) => {
-  const { email, password, nombre } = req.body;
+  const { email, password, name } = req.body;
 
   try {
     // Verificar si el usuario ya existe
@@ -23,7 +23,7 @@ const register = async (req, res, next) => {
       data: {
         email,
         password: hashedPassword,
-        nombre,
+        name,
       },
     });
 
