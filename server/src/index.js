@@ -3,8 +3,16 @@ import authRoutes from "./routes/authRoutes.js";
 import dotenv from "dotenv";
 import prisma from "./config/prisma.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import cors from "cors";
 
 const app = express();
+
+// Configurar CORS
+app.use(cors({
+  origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // Rutas
