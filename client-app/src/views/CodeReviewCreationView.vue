@@ -99,12 +99,12 @@ export default {
             this.setLoading(true);
             try {
                 await api.post('/code/pull-requests', pullRequest);
-                toast.success("Code Review Created!", {
+                this.toast.success("Code Review Created!", {
                     timeout: 2000
                 });
-                router.push('/');
+                router.push('/codereviews');
             } catch (error) {
-                toast.error("Error while creating Code Review", {
+                this.toast.error("Error while creating Code Review", {
                     timeout: 2000
                 });
                 console.error(error);
