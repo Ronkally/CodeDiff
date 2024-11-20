@@ -25,4 +25,6 @@ const loginValidation = [
 router.post('/register', registerValidation, validate, register);
 router.post('/login', loginValidation, validate, login);
 
+
+
 export default router;

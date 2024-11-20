@@ -67,7 +67,16 @@ const login = async (req, res, next) => {
       { expiresIn: '1h' }
     );
 
-    res.json({ token });
+    res.json({ 
+      token: token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        isAdmin: user.isAdmin,
+        isApprover: user.isApprover
+      }
+    });
   } catch (error) {
     next(error);
   }

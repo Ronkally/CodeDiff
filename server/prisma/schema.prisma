@@ -17,4 +17,68 @@ model User {
   name    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  isAdmin   Boolean @default(false)
+  isApprover Boolean @default(false)
+  pullRequests_Approver PullRequest[] @relation("PullRequests_Approver") 
+  pullRequests_Author PullRequest[] @relation("PullRequests_Author")
+  comments Comment[]
+}
+
+model Change {
+  id        Int      @id @default(autoincrement())
+  changesonPullRequest ChangesOnPullRequest[]
+  ruleSet      String
+  ruleName     String
+  oldCode      String
+  newCode      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChangesOnPullRequest {
+  change      Change   @relation(fields: [changeId], references: [id])
+  changeId    Int
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id])
+  pullRequestId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([changeId, pullRequestId])
+}
+
+model PullRequest {
+  id        Int      @id @default(autoincrement())
+  approver     User?     @relation("PullRequests_Approver", fields: [approverId], references: [id])
+  approverId    Int?
+  author     User     @relation("PullRequests_Author", fields: [authorId], references: [id])
+  authorId   Int
+  changes    ChangesOnPullRequest[]
+  comments   CommentsOnPullRequest[]
+  title     String
+  description String
+  isApproved Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CommentsOnPullRequest {
+  pullRequest PullRequest @relation(fields: [pullRequestId], references: [id])
+  pullRequestId Int
+  comment     Comment   @relation(fields: [commentId], references: [id])
+  commentId   Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([pullRequestId, commentId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  pullRequestId Int
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   Int
+  commentsonPullRequest CommentsOnPullRequest[]
+  content    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

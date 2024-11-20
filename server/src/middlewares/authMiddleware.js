@@ -4,7 +4,7 @@ const authMiddleware = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     // Verificar si el header de autorización existe
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    if (!authHeader || !authHeader.startsWith('Bearer')) {
         return res.status(401).json({ mensaje: 'Autenticación requerida' });
     }
 

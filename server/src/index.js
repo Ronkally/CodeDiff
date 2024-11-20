@@ -1,5 +1,7 @@
 import express from "express";
 import authRoutes from "./routes/authRoutes.js";
+import pullRequestRoutes from "./routes/pullRequestRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js"
 import dotenv from "dotenv";
 import prisma from "./config/prisma.js";
 import errorHandler from "./middlewares/errorHandler.js";
@@ -17,6 +19,8 @@ app.use(express.json());
 
 // Rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/code', pullRequestRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Middleware de manejo de errores
 app.use(errorHandler);

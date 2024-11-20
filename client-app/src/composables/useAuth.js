@@ -18,6 +18,8 @@ export const useAuth = () => {
   return {
     token: authStore.token,
     isAuthenticated: authStore.isAuthenticated,
+    isApprover: authStore.isApprover,
+    isAdmin: authStore.isAdmin,
     login,
     register,
     logout,
