@@ -60,6 +60,10 @@ const login = async (req, res, next) => {
       return res.status(400).json({ mensaje: 'Credenciales inválidas' });
     }
 
+    if (!user.isActive) {
+      return res.status(400).json({ mensaje: 'Usuario inactivo' });
+    }
+
     // Generar JWT
     const token = jwt.sign(
       { userId: user.id, email: user.email },

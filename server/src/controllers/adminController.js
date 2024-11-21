@@ -1,8 +1,12 @@
 import prisma from '../config/prisma.js';
+import bcrypt from 'bcrypt';
 
 const getallUsers = async (req, res, next) => {
   try {
     const users = await prisma.user.findMany( {
+        where: {
+          isActive: true,
+        },
         select: {
             id: true,
             name: true,
@@ -11,7 +15,17 @@ const getallUsers = async (req, res, next) => {
             isApprover: true,
         },
     });
-    res.status(200).json(users);
+
+    const userDTO = users.map(user => {
+        return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            roles: `${user.isAdmin ? 'Admin' : ''}${user.isApprover && user.isAdmin ? ', ' : '' }${user.isApprover ? 'Approver' : ''}`,
+        }
+    });
+
+    res.status(200).json(userDTO);
   } catch (error) {
     next(error);
   }
@@ -24,6 +38,7 @@ const getUserById = async (req, res, next) => {
     const user = await prisma.user.findUnique({
       where: {
         id: parseInt(id),
+        isActive: true,
       },
       select: {
         id: true,
@@ -33,6 +48,10 @@ const getUserById = async (req, res, next) => {
         isApprover: true,
       },
     });
+
+    if (!user) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
 
     res.status(200).json(user);
   } catch (error) {
@@ -48,6 +67,7 @@ const updateUser = async (req, res, next) => {
     const user = await prisma.user.update({
       where: {
         id: parseInt(id),
+        isActive: true,
       },
       data: {
         name,
@@ -57,6 +77,10 @@ const updateUser = async (req, res, next) => {
       },
     });
 
+    if (!user) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
     res.status(200).json(user);
   } catch (error) {
     next(error);
@@ -64,30 +88,49 @@ const updateUser = async (req, res, next) => {
 }
 
 const createUser = async (req, res, next) => {
-    const { name, email, isAdmin, isApprover } = req.body;
-    
+    const { name, email, isAdmin, isApprover, password } = req.body;
+
     try {
-        const user = await prisma.user.create({
+      // Verificar si el usuario ya existe
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+      });
+  
+      if (existingUser) {
+        return res.status(400).json({ mensaje: 'El usuario ya existe' });
+      }
+  
+      // Hash de la contraseña
+      const hashedPassword = await bcrypt.hash(password, 10);
+  
+      // Crear nuevo usuario
+      const user = await prisma.user.create({
         data: {
-            name,
-            email,
-            isAdmin,
-            isApprover,
+          name,
+          email,
+          password: hashedPassword,
+          isAdmin,
+          isApprover,
         },
-    });
-    
-        res.status(201).json(user);
+      });
+  
+      res.status(201).json({ user });
     } catch (error) {
-        next(error);
+      next(error);
     }
 }
 
 const deleteUser = async (req, res, next) => { 
+  console.log('deleteUser');
+  
     const { id } = req.params;
     try {
-        await prisma.user.delete({
+        await prisma.user.update({
             where: {
                 id: parseInt(id),
+            },
+            data: {
+                isActive: false,
             },
         });
         res.status(204).end();

@@ -3,17 +3,17 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-6 mx-auto p-5 rounded border shadow">
-          <h2>Iniciar Sesión</h2>
+          <h2>Log in</h2>
           <form @submit.prevent="handleSubmit">
             <div>
               <label class="form-label">Email:</label>
               <input :disabled="loading" class="form-control" type="email" v-model="email" required />
             </div>
             <div>
-              <label form="form-label">Contraseña:</label>
+              <label form="form-label">Password:</label>
               <input :disabled="loading" class="form-control" type="password" v-model="password" required />
             </div>
-            <button type="submit" :disabled="loading" class="btn btn-primary mt-3">Iniciar Sesión</button>
+            <button type="submit" :disabled="loading" class="btn btn-primary mt-3">Log in</button>
           </form>
           <p v-if="error" style="color: red;">{{ error }}</p>
         </div>

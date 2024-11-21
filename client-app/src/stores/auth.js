@@ -18,6 +18,8 @@ export const useAuthStore = defineStore('auth', {
         this.isAuthenticated = true;
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.user));
+        this.isAdmin = JSON.stringify(response.data.user.isAdmin);
+        this.isApprover = JSON.stringify(response.data.user.isApprover);
       } catch (error) {
         throw error;
       }

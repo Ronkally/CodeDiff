@@ -5,6 +5,8 @@ import { useAuthStore } from '../stores/auth';
 import CodeReviewCreationView from '@/views/CodeReviewCreationView.vue';
 import CodeReviewView from '@/views/CodeReviewView.vue';
 import CodeReviewsView from '@/views/CodeReviewsView.vue';
+import AdminView from '@/views/AdminView.vue';
+import AdminUpsertView from '@/views/AdminUpsertView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -25,13 +27,35 @@ const router = createRouter({
       name: "CodeReviewsView", 
       path: "/codereviews", 
       component: CodeReviewsView,
+      meta: { requiresAuth: true },
       props: true  
     },
     {
       name: "CodeReview", 
       path: "/codereview/:id", 
       component: CodeReviewView,
+      meta: { requiresAuth: true },
       props: true  
+    },
+    {
+      name: "AdminView", 
+      path: "/admin", 
+      component: AdminView,
+      meta: { requiresAuth: true },
+      props: true  
+    },
+    {
+      name: "CreateUser", 
+      path: "/admin/create-user", 
+      component: AdminUpsertView,
+      meta: { requiresAuth: true },
+    },
+    {
+      name: "EditUser", 
+      path: "/admin/edit-user/:id", 
+      component: AdminUpsertView,
+      meta: { requiresAuth: true },
+      props: true
     },
     {
       path: '/login',

@@ -9,6 +9,6 @@ router.get('/user', authMiddleware, adminMiddleware, getallUsers);
 router.get('/user/:id', authMiddleware, adminMiddleware, getUserById);
 router.put('/user/:id', authMiddleware, adminMiddleware, updateUser);
 router.delete('/user/:id', authMiddleware, adminMiddleware, deleteUser);
-router.post('/user/:id', authMiddleware, adminMiddleware, createUser)
+router.post('/user', authMiddleware, adminMiddleware, createUser)
 
 export default router;

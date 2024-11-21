@@ -19,6 +19,7 @@ model User {
   updatedAt DateTime @updatedAt
   isAdmin   Boolean @default(false)
   isApprover Boolean @default(false)
+  isActive Boolean @default(true)
   pullRequests_Approver PullRequest[] @relation("PullRequests_Approver") 
   pullRequests_Author PullRequest[] @relation("PullRequests_Author")
   comments Comment[]

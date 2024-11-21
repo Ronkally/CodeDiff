@@ -15,6 +15,9 @@ const getPullRequests = async (req, res, next) => {
           },	
         },
       },
+      orderBy: [{
+        createdAt: 'desc',
+      }]
     });
 
     const rows = pullRequests.map((pullRequest) => {

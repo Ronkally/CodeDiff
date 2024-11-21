@@ -1,15 +1,17 @@
 import prisma from '../config/prisma.js';
 
-const adminMiddleware = (req, res, next) => {
+const adminMiddleware = async (req, res, next) => {
     const  user  = JSON.parse(req.headers.user);
+    
     if (user) {
         try {
-            const user = prisma.user.findUnique({
+            const userdb = await prisma.user.findUnique({
                 where: {
                     id: user.id,
                 },
             });
-            if (user.isAdmin) {
+
+            if (userdb && userdb.isAdmin) {
                 next();
             }
         }
@@ -17,7 +19,9 @@ const adminMiddleware = (req, res, next) => {
             return res.status(401).json({ mensaje: 'Acceso denegado' });
         }
     } 
-    return res.status(401).json({ mensaje: 'Acceso denegado' });
+    else {
+        return res.status(401).json({ mensaje: 'Acceso denegado' });
+    }
 };
 
 export default adminMiddleware;
