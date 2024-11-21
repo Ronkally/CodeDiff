@@ -59,6 +59,20 @@ const getPullRequestById = async (req, res, next) => {
           include: {
             change: true,
           },
+        },
+        comments: { 
+          include: {
+            comment: { 
+              select: {
+                content: true,
+                author: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
         }
       }
     });
@@ -119,4 +133,35 @@ const createPullRequest = async (req, res, next) => {
   }
 }
 
-export { getPullRequests, createPullRequest, getPullRequestById, updatePullRequestById };
+const addCommentToPullRequest = async (req, res, next) => {
+  const { id } = JSON.parse(req.headers.user);
+  const { prId, comment } = req.body;
+
+  try {
+    const pullRequest = await prisma.pullRequest.update({
+      where: {
+        id: parseInt(prId),
+      },
+      data: {
+        comments: {
+          create: {
+            comment: {
+              create: {
+                content: comment,
+                pullRequestId: parseInt(prId),
+                authorId: id,
+              },
+            },
+          }
+        }
+      }
+    });
+
+    res.status(200).json({ pullRequest });
+  }
+  catch (error) {
+    next(error);
+  }
+}
+
+export { getPullRequests, createPullRequest, getPullRequestById, updatePullRequestById, addCommentToPullRequest };

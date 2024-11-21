@@ -37,6 +37,28 @@
         <div v-else-if="!codeReview && !loading">
             <p>Code review not found</p>
         </div>
+        <div v-if="!isApproved" class="mt-5" >
+            <form @submit.prevent="addComment">
+                <div class="mb-3">
+                    <label for="comment" class="form-label">Add a comment</label>
+                    <textarea class="form-control" id="comment" rows="3" v-model="comment" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Comment</button>
+            </form>
+        </div>
+        <div v-if="listcomments.length > 0" class="mt-5">
+            <h5>Comments</h5>
+            <div v-for="comment in listcomments" class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ comment.comment.author.name }}</h5>
+                    <p class="card-text">{{ comment.comment.content }}</p>
+                </div>
+                <div class="card-footer text-muted">
+                    {{ new Date(comment.createdAt).toLocaleString() }}
+                </div>  
+            </div>
+        </div>
+
     </div>
     <VueSpinnerHourglass v-if="loading" :size="100" :thickness="100" :color="'#42b883'" :speed="0.5"
         style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
@@ -64,11 +86,14 @@ const props = defineProps({
     }
 })
 
+const comment = ref('');
 const codeReview = ref(null);
 const loading = ref(false);
 const isApproved = ref(false);
 const toast = useToast();
 const approver = ref(null);
+const prId = ref(null);
+const listcomments = ref([]);
 
 onMounted(async () => {
     try {
@@ -77,12 +102,32 @@ onMounted(async () => {
         codeReview.value = changes.data.pullRequest;
         isApproved.value = changes.data.pullRequest.isApproved;
         approver.value = changes.data.pullRequest.approver;
+        prId.value = changes.data.pullRequest.id;
+        listcomments.value = changes.data.pullRequest.comments.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     } catch (error) {
         console.error(error);
     } finally {
         loading.value = false;
     }
 });
+
+const addComment = async () => {
+    try {
+        loading.value = true;
+        const commentToAdd = comment.value;
+        await api.put(`/code/pull-requests/${props.id}/comment`, { comment: commentToAdd, prId: prId.value });
+        toast.success("Comment added!", {
+          timeout: 2000
+        });
+        listcomments.value = [...listcomments.value, { comment: { content: commentToAdd, author: JSON.parse(localStorage.getItem('user')) }, createdAt: new Date() }]
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        comment.value = '';
+    } catch (error) {
+        console.error(error);
+    } finally {
+        loading.value = false;
+    }
+}
 
 const approveCodeReview = async () => {
     try {

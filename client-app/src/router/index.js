@@ -7,6 +7,7 @@ import CodeReviewView from '@/views/CodeReviewView.vue';
 import CodeReviewsView from '@/views/CodeReviewsView.vue';
 import AdminView from '@/views/AdminView.vue';
 import AdminUpsertView from '@/views/AdminUpsertView.vue';
+import AccountView from '@/views/AccountView.vue';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -48,6 +49,12 @@ const router = createRouter({
       name: "CreateUser", 
       path: "/admin/create-user", 
       component: AdminUpsertView,
+      meta: { requiresAuth: true },
+    },
+    {
+      name: "Account", 
+      path: "/account", 
+      component: AccountView,
       meta: { requiresAuth: true },
     },
     {
